@@ -12,15 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 part 'controller.dart';
-//class AdvCamera {
-//  static const MethodChannel _channel =
-//      const MethodChannel('_camera');
-//
-//  static Future<String> get platformVersion async {
-//    final String version = await _channel.invokeMethod('getPlatformVersion');
-//    return version;
-//  }
-//}
+
 
 enum FlashType { auto, on, off, torch }
 enum CameraType { front, rear }
