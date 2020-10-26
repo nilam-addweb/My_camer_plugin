@@ -31,10 +31,7 @@ class _MyAppState extends State<MyApp> {
           children: [
             Column(
               children: [
-
-
-
-               Container(
+                Container(
                     color: Colors.transparent,
                     child: Row(
                       children: [
@@ -51,7 +48,6 @@ class _MyAppState extends State<MyApp> {
                             cameraController.setFlashType(FlashType.torch);
                           },
                         ),
-                        
                       ],
                     ),
                   ),
@@ -74,6 +70,16 @@ class _MyAppState extends State<MyApp> {
                     )),
               ],
             ),
+           Positioned(
+              bottom: 16.0,
+              left: 16.0,
+              child: imagePath != null
+                  ? Container(
+                  width: 100.0,
+                  height: 100.0,
+                  child: Image.file(File(imagePath)))
+                  : Icon(Icons.image),
+            )
           ],
         ),
       ),
@@ -93,7 +99,6 @@ class _MyAppState extends State<MyApp> {
             ),
             Container(height: 16.0),
             FloatingActionButton(
-               // heroTag: "test2",
                 child: Icon(Icons.camera_alt),
                 onPressed: () {
                   cameraController.captureImage();

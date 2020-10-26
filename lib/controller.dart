@@ -16,8 +16,6 @@ class MyCameraController {
     assert(id != null);
     final MethodChannel channel = MethodChannel('plugins.flutter.io/my_camera/$id');
     // TODO(amirh): remove this on when the invokeMethod update makes it to stable Flutter.
-    // https://github.com/flutter/flutter/issues/26431
-    // ignore: strong_mode_implicit_dynamic_method
     await channel.invokeMethod('waitForCamera');
     return MyCameraController._(
       channel,
@@ -47,8 +45,6 @@ class MyCameraController {
 
   Future<void> setSessionPreset( cameraSessionPreset) async {
     // TODO(amirh): remove this on when the invokeMethod update makes it to stable Flutter.
-    // https://github.com/flutter/flutter/issues/26431
-    // ignore: strong_mode_implicit_dynamic_method
     if (Platform.isAndroid) return;
 
     String sessionPreset;
@@ -64,8 +60,6 @@ class MyCameraController {
 
   Future<void> setPreviewRatio(CameraPreviewRatio cameraPreviewRatio) async {
     // TODO(amirh): remove this on when the invokeMethod update makes it to stable Flutter.
-    // https://github.com/flutter/flutter/issues/26431
-    // ignore: strong_mode_implicit_dynamic_method
     if (Platform.isIOS) return;
 
     String previewRatio;
@@ -97,8 +91,6 @@ class MyCameraController {
 
   Future<void> captureImage({int maxSize}) async {
     // TODO(amirh): remove this on when the invokeMethod update makes it to stable Flutter.
-    // https://github.com/flutter/flutter/issues/26431
-    // ignore: strong_mode_implicit_dynamic_method
     await channel.invokeMethod('captureImage', <String, dynamic>{
       'maxSize': maxSize,
     });
@@ -106,22 +98,18 @@ class MyCameraController {
 
   Future<void> switchCamera() async {
     // TODO(amirh): remove this on when the invokeMethod update makes it to stable Flutter.
-    // https://github.com/flutter/flutter/issues/26431
-    // ignore: strong_mode_implicit_dynamic_method
+
     await channel.invokeMethod('switchCamera', null);
   }
 
   Future<void> turnOffCamera() async {
     // TODO(amirh): remove this on when the invokeMethod update makes it to stable Flutter.
-    // https://github.com/flutter/flutter/issues/26431
-    // ignore: strong_mode_implicit_dynamic_method
     await channel.invokeMethod('turnOff', null);
   }
 
   Future<List<String>> getPictureSizes() async {
     // TODO(amirh): remove this on when the invokeMethod update makes it to stable Flutter.
-    // https://github.com/flutter/flutter/issues/26431
-    // ignore: strong_mode_implicit_dynamic_method
+
     var result = await channel.invokeMethod('getPictureSizes', null);
 
     if (result == null) return null;
@@ -131,8 +119,7 @@ class MyCameraController {
 
   Future<void> setPictureSize(int width, int height) async {
     // TODO(amirh): remove this on when the invokeMethod update makes it to stable Flutter.
-    // https://github.com/flutter/flutter/issues/26431
-    // ignore: strong_mode_implicit_dynamic_method
+
     var x = await channel
         .invokeMethod('setPictureSize', {"pictureWidth": width, "pictureHeight": height});
 
@@ -141,8 +128,6 @@ class MyCameraController {
 
   Future<void> setSavePath(String savePath) async {
     // TODO(amirh): remove this on when the invokeMethod update makes it to stable Flutter.
-    // https://github.com/flutter/flutter/issues/26431
-    // ignore: strong_mode_implicit_dynamic_method
     if (Platform.isIOS) return;
 
     var x = await channel.invokeMethod('setSavePath', {"savePath": savePath});
@@ -152,9 +137,7 @@ class MyCameraController {
 
   Future<void> setFlashType(FlashType flashType) async {
     // TODO(amirh): remove this on when the invokeMethod update makes it to stable Flutter.
-    // https://github.com/flutter/flutter/issues/26431
-    // ignore: strong_mode_implicit_dynamic_method
-    String flashTypeString;
+   String flashTypeString;
 
     switch (flashType) {
       case FlashType.auto:

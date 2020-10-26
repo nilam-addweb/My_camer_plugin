@@ -167,7 +167,7 @@ public class   RunTimePermission extends Activity {
                 dialog.dismiss();
             }
         });
-        Log.d("tagtag", "activity => " + (activity == null));
+        Log.d("tag", "activity => " + (activity == null));
         if (!((Activity) activity).isFinishing() && msg.length() > 0) {
             adb.show();
         } else {

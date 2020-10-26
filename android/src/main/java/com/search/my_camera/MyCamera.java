@@ -951,7 +951,7 @@ public class MyCamera implements MethodChannel.MethodCallHandler,
                     }
                 });
             } catch (Exception e) {
-                Log.e("error", "lalalalalala=> " + e);
+                Log.e("error", "cameraerror=> " + e);
             }
         }
     }

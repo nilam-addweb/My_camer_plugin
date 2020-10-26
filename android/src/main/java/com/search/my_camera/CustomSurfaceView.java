@@ -69,7 +69,7 @@ public class CustomSurfaceView extends SurfaceView {
 //    @Override
 //    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
 //        super.onLayout(changed, left, top, right, bottom);
-//        Log.d("ricric", "CustomSurfaceView onLayout");
+//        Log.d("ri", "CustomSurfaceView onLayout");
 ////        try {
 ////            if (cameraFacing == 0) {
 ////                camera = Camera.open(0);
@@ -85,7 +85,7 @@ public class CustomSurfaceView extends SurfaceView {
 //    @Override
 //    protected void onDraw(Canvas canvas) {
 //        super.onDraw(canvas);
-//        Log.d("ricric", "CustomSurfaceView onDraw");
+//        Log.d("ri", "CustomSurfaceView onDraw");
 //    }
 //
 
