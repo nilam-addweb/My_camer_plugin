@@ -124,7 +124,6 @@ class _MyCameraState extends State<MyCamera> {
       "flashType": flashType,
       "fileNamePrefix": widget.fileNamePrefix ?? "my_camera",
       "bestPictureSize": widget.bestPictureSize,
-      //for first run on Android (because on each device the default picture size is vary, for example MI 8 Lite's default is the lowest resolution)
     };
 
     Widget camera;
