@@ -51,20 +51,7 @@ class _MyAppState extends State<MyApp> {
                             cameraController.setFlashType(FlashType.torch);
                           },
                         ),
-
-                       /* FlatButton(
-
-                          child: Text("Off"),
-                          onPressed: () {
-                            cameraController.setFlashType(FlashType.off);
-                          },
-                        ),*/
-                       /* FlatButton(
-                          child: Text("Torch"),
-                          onPressed: () {
-                            cameraController.setFlashType(FlashType.torch);
-                          },
-                        ),*/
+                        
                       ],
                     ),
                   ),
