@@ -87,16 +87,6 @@ class _MyAppState extends State<MyApp> {
                     )),
               ],
             ),
-           /* Positioned(
-              bottom: 16.0,
-              left: 16.0,
-              child: imagePath != null
-                  ? Container(
-                  width: 100.0,
-                  height: 100.0,
-                  child: Image.file(File(imagePath)))
-                  : Icon(Icons.image),
-            )*/
           ],
         ),
       ),
