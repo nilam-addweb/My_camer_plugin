@@ -20,8 +20,28 @@ import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
-
+import android.content.Intent;
 import androidx.annotation.NonNull;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Log;
+import android.net.Uri;
+import android.os.Bundle;
+
+import io.flutter.plugin.common.MethodChannel;
+import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
+import io.flutter.plugin.common.MethodChannel.Result;
+import io.flutter.plugin.common.MethodCall;
+import io.flutter.plugin.common.PluginRegistry;
+import io.flutter.plugin.common.PluginRegistry.Registrar;
+
+import com.uuzuche.lib_zxing.activity.CodeUtils;
+import com.uuzuche.lib_zxing.activity.ZXingLibrary;
+
+import java.io.ByteArrayOutputStream;
+
+import static com.uuzuche.lib_zxing.activity.CodeUtils.RESULT_SUCCESS;
+import static com.uuzuche.lib_zxing.activity.CodeUtils.RESULT_TYPE;
 
 import com.karumi.dexter.MultiplePermissionsReport;
 
@@ -46,11 +66,11 @@ import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.PluginRegistry;
 import io.flutter.plugin.platform.PlatformView;
 
-public class MyCamera implements MethodChannel.MethodCallHandler,
-        PlatformView, SurfaceHolder.Callback {
-    private final MethodChannel methodChannel;
-    private final Context context;
-    private final Activity activity;
+public class MyCamera implements MethodChannel.MethodCallHandler, PlatformView, SurfaceHolder.Callback{
+
+    private  MethodChannel methodChannel;
+    private  Context context;
+    private  Activity activity;
     private boolean disposed = false;
     private View view;
     private SurfaceView imgSurface;
@@ -62,26 +82,46 @@ public class MyCamera implements MethodChannel.MethodCallHandler,
     private File folder;
     private Integer maxSize;
     private String savePath;
+    private int REQUEST_IMAGE = 101;
     private String fileNamePrefix = "my_camera";
     private int iOrientation = 0;
     private int mPhotoAngle = 90;
     private String previewRatio;
     private float mDist;
+    private int REQUEST_CODE = 100;
     private Camera.Size pictureSize;
     private String flashType = Camera.Parameters.FLASH_MODE_AUTO;
     private boolean bestPictureSize;
+    public static  Result result = null;
+
+   /* public  void registerWith(Registrar registrar) {
+        methodChannel = new MethodChannel(registrar.messenger(), "my_camera");
+        MyCamera plugin = new MyCamera(registrar.activity());
+        methodChannel.setMethodCallHandler(plugin);
+        registrar.addActivityResultListener(plugin);
+
+        //  ZXingLibrary.initDisplayOpinion(registrar.activity());
+    }*/
+
+
+  /* public MyCamera(Activity activity) {
+       this.activity = activity;
+   }*/
 
     MyCamera(
             int id,
             final Context context,
             PluginRegistry.Registrar registrar, Object args) {
         this.context = context;
+      //  MyCamera plugin =  MyCamera(registrar.activity());
+        //registrar.addActivityResultListener();
         this.activity = registrar.activity();
 
         methodChannel =
                 new MethodChannel(registrar.messenger(), "plugins.flutter.io/my_camera/" + id);
         methodChannel.setMethodCallHandler(this);
         view = registrar.activity().getLayoutInflater().inflate(com.search.my_camera.R.layout.activity_camera, null);
+        //qr = registrar.activity().getLayoutInflater().inflate(com.search.my_camera.R.layout.activity_second, null);
         imgSurface = view.findViewById(com.search.my_camera.R.id.imgSurface);
         com.search.my_camera.CameraFragment cameraFragment = (com.search.my_camera.CameraFragment) activity.getFragmentManager().findFragmentById(com.search.my_camera.R.id.cameraFragment);
         imgSurface.setFocusable(true);
@@ -96,6 +136,7 @@ public class MyCamera implements MethodChannel.MethodCallHandler,
 
             @Override
             public void onResume() {
+
                 setupCamera();
             }
         };
@@ -200,6 +241,9 @@ public class MyCamera implements MethodChannel.MethodCallHandler,
         camera.takePicture(null, null, jpegCallback);
     }
 
+
+
+
     @Override
     public void onMethodCall(MethodCall methodCall, @NonNull MethodChannel.Result result) {
         switch (methodCall.method) {
@@ -209,6 +253,33 @@ public class MyCamera implements MethodChannel.MethodCallHandler,
             case "turnOff":
                 camera.stopPreview();
                 result.success(null);
+                break;
+            case "scan":
+                this.result = result;
+                showBarcodeView();
+                break;
+            case "scan_photo":
+                this.result = result;
+                choosePhotos();
+                break;
+            case "scan_path":
+                this.result = result;
+                String path = methodCall.argument("path");
+                CodeUtils.AnalyzeCallback analyzeCallback = new CustomAnalyzeCallback(this.result, this.activity.getIntent());
+                CodeUtils.analyzeBitmap(path, analyzeCallback);
+                break;
+            case "scan_bytes":
+                this.result = result;
+                byte[] bytes = methodCall.argument("bytes");
+                Bitmap  bitmap = BitmapFactory.decodeByteArray(bytes , 0, bytes != null ? bytes.length : 0);
+                CodeUtils.analyzeBitmap(bitmap, new CustomAnalyzeCallback(this.result, this.activity.getIntent()));
+                break;
+            case "generate_barcode":
+                this.result = result;
+                generateQrCode(methodCall);
+                break;
+            default:
+                result.notImplemented();
                 break;
             case "setPreviewRatio": {
                 String previewRatio = "";
@@ -402,6 +473,26 @@ public class MyCamera implements MethodChannel.MethodCallHandler,
     public View getView() {
         return view;
     }
+    private void showBarcodeView() {
+        Intent intent = new Intent(activity, SecondActivity.class);
+        activity.startActivityForResult(intent, REQUEST_CODE);
+    }
+    private void choosePhotos() {
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_PICK);
+        intent.setType("image/*");
+        activity.startActivityForResult(intent, REQUEST_IMAGE);
+    }
+    private void generateQrCode(MethodCall call) {
+        String code = call.argument("code");
+        Bitmap bitmap = CodeUtils.createImage(code, 400, 400, null);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] datas = baos.toByteArray();
+        this.result.success(datas);
+
+    }
+
 
     @Override
     public void dispose() {
@@ -480,7 +571,6 @@ public class MyCamera implements MethodChannel.MethodCallHandler,
 
             int orientation = setCameraDisplayOrientation(0);
 
-//            param.setRotation(orientation); //dicomment karena kmaren itu hp xiaomi 4a dan huawei ke-rotate
 
             try {
                 camera.setParameters(param);
@@ -668,11 +758,7 @@ public class MyCamera implements MethodChannel.MethodCallHandler,
             reqWidth = metrics.heightPixels;
             }
 
-//            // Fix for exporting image with correct resolution in landscape mode
-//            if(reqWidth > reqHeight){
-//                reqHeight = metrics.widthPixels;
-//                reqWidth = metrics.heightPixels;
-//            }
+
 
             options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
 
@@ -973,6 +1059,7 @@ public class MyCamera implements MethodChannel.MethodCallHandler,
         return (a / gcm) + ":" + (b / gcm);
     }
 }
+
 
 interface CustomMultiplePermissionsListener {
     void onPermissionsChecked(MultiplePermissionsReport report);

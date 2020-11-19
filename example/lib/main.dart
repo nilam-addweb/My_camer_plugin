@@ -1,7 +1,12 @@
+import 'dart:async';
 import 'dart:io';
+import 'dart:typed_data';
 
+import 'package:flutter/cupertino.dart';
 import 'package:my_camera/my_camera.dart';
 import 'package:flutter/material.dart';
+
+
 
 void main() {
   String id = DateTime.now().toIso8601String();
@@ -20,8 +25,21 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   List<String> pictureSizes = [];
   String imagePath;
+  Uint8List bytes = Uint8List(0);
+  TextEditingController _inputController;
+  TextEditingController outputController;
+  MyCameraController cameraController;
+
+
+  @override
+  initState() {
+    super.initState();
+    this._inputController = new TextEditingController();
+    this.outputController = new TextEditingController();
+  }
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Home'),
@@ -29,12 +47,15 @@ class _MyAppState extends State<MyApp> {
       body: SafeArea(
         child: Stack(
           children: [
+
+
             Column(
               children: [
                 Container(
                     color: Colors.transparent,
                     child: Row(
                       children: [
+
                         IconButton(
                           icon: Icon(Icons.flash_off_outlined,color: Colors.black,),
                           onPressed: () {
@@ -51,6 +72,17 @@ class _MyAppState extends State<MyApp> {
                       ],
                     ),
                   ),
+                TextField(
+                  controller: this.outputController,
+                  maxLines: 2,
+                  decoration: InputDecoration(
+                    prefixIcon: Icon(Icons.wrap_text),
+                    helperText: 'The barcode or qrcode you scan will be displayed in this area.',
+                    hintText: 'The barcode or qrcode you scan will be displayed in this area.',
+                    hintStyle: TextStyle(fontSize: 15),
+                    contentPadding: EdgeInsets.symmetric(horizontal: 7, vertical: 15),
+                  ),
+                ),
 
 
 
@@ -103,11 +135,28 @@ class _MyAppState extends State<MyApp> {
                 onPressed: () {
                   cameraController.captureImage();
                 }),
+            Container(height: 16.0),
+            FloatingActionButton(
+                child: Icon(Icons.scanner),
+                onPressed: () {
+                  _scan();
+                }),
           ]),
 
     );
   }
-  MyCameraController cameraController;
+
+
+  Future _scan() async {
+  String barcode =await cameraController.scan();
+
+    if (barcode == null) {
+      print('nothing return.');
+    } else {
+      this.outputController.text = barcode;
+      print(barcode);
+    }
+  }
 
   _onCameraCreated(MyCameraController controller) {
     this.cameraController = controller;
@@ -118,4 +167,5 @@ class _MyAppState extends State<MyApp> {
       });
     });
   }
+
 }

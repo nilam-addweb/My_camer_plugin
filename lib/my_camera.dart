@@ -3,6 +3,7 @@ library my_camera;
 
 import 'dart:async';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:my_camera/my_camera_plugin.dart';
 import 'package:my_camera/lifecycle_handler.dart';
