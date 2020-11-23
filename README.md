@@ -25,22 +25,23 @@ Custome Design of camera
 
 First, add My_camera as a dependency in your pubspec.yaml file.
 
-# And  add some pemission in manifest file :-
+# And  add some pemission in manifest file
 
-<uses-permission android:name="android.permission.FLASHLIGHT" />
-<uses-permission android:name="android.permission.WAKE_LOCK" />
-<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-<uses-permission android:name="android.permission.RECORD_AUDIO" />
-<uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
-<uses-permission android:name="android.permission.INTERNET" />
-<uses-permission android:name="android.permission.CAMERA" />
-<uses-feature android:name="android.hardware.camera" />
-<uses-feature android:name="android.hardware.camera.front" />
-<uses-permission android:name="android.permission.VIBRATE"/>
-<uses-feature android:name="android.hardware.microphone" />
+uses-permission android:name="android.permission.FLASHLIGHT"
+
+uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+
+uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+
+uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"
+
+uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"
+
+uses-permission android:name="android.permission.INTERNET"
+
+uses-permission android:name="android.permission.CAMERA"
+
+uses-feature android:name="android.hardware.camera"
 
 # And use this Method in your code
 
