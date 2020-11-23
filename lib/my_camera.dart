@@ -26,12 +26,18 @@ typedef void ImageCapturedCallback(String path);
 class MyCamera extends StatefulWidget {
   final CameraType initialCameraType;
   final CameraPreviewRatio cameraPreviewRatio;
+  static const int CAMERA_BACK = 0;
+  static const int CAMERA_FRONT = 1;
 
+  static const Size PREVIEW = Size(640, 480);
+
+  static final Map<int, List<Size>> _previewSizes = {};
   final CameraCreatedCallback onCameraCreated;
   final ImageCapturedCallback onImageCaptured;
   final FlashType flashType;
   final bool bestPictureSize;
   final String fileNamePrefix;
+
 
   const MyCamera({
     Key key,
@@ -285,3 +291,5 @@ class CustomRect extends CustomClipper<Rect> {
     return true;
   }
 }
+
+

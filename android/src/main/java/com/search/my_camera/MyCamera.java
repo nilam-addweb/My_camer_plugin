@@ -1,16 +1,24 @@
 package com.search.my_camera;
-
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.os.Handler;
+import android.os.Looper;
+import androidx.core.app.ActivityCompat;
+import io.flutter.embedding.engine.plugins.FlutterPlugin;
+import io.flutter.embedding.engine.plugins.activity.ActivityAware;
+import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import io.flutter.plugin.common.BinaryMessenger;
 import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.hardware.Camera;
 import android.hardware.SensorManager;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.content.pm.PackageManager;
 import android.os.Environment;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -60,15 +68,25 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-
+import com.search.my_camera.BarcodeCaptureActivity;
+import com.google.android.gms.common.api.CommonStatusCodes;
+import com.google.android.gms.common.images.Size;
+import com.google.android.gms.vision.barcode.Barcode;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.PluginRegistry;
 import io.flutter.plugin.platform.PlatformView;
+import com.search.my_camera.CameraSourcePreview;
+import com.search.my_camera.GraphicOverlay;
+import io.flutter.plugin.common.PluginRegistry.ActivityResultListener;
 
-public class MyCamera implements MethodChannel.MethodCallHandler, PlatformView, SurfaceHolder.Callback{
+import com.search.my_camera.CameraSource;
+
+public class MyCamera implements MethodChannel.MethodCallHandler, PlatformView, SurfaceHolder.Callback {
 
     private  MethodChannel methodChannel;
+
+    private MycameraDelegate delegate;
     private  Context context;
     private  Activity activity;
     private boolean disposed = false;
@@ -89,10 +107,33 @@ public class MyCamera implements MethodChannel.MethodCallHandler, PlatformView, 
     private String previewRatio;
     private float mDist;
     private int REQUEST_CODE = 100;
+    private ActivityPluginBinding activityBinding;
     private Camera.Size pictureSize;
     private String flashType = Camera.Parameters.FLASH_MODE_AUTO;
     private boolean bestPictureSize;
     public static  Result result = null;
+    private static final String CHANNEL = "my_camera";
+
+    public static final int RC_BARCODE_SCAN = 9010;
+    public static final int RC_OCR_READ = 8020;
+    public static final int RC_FACE_DETECT = 7030;
+    public static final int RC_START = 6040;
+
+    public static final int REQUEST_CAMERA_PERMISSION = 2345;
+
+    public int callerId;
+    public MethodChannel.Result pendingResult;
+   public MethodCall methodCall;
+    public boolean useFlash = false;
+    public boolean autoFocus = true;
+    private int formats = Barcode.ALL_FORMATS;
+    public boolean multiple = false;
+    public boolean waitTap = false;
+    public boolean showText = false;
+    public int previewWidth = 640;
+    public int previewHeight = 480;
+    public int mycamera = CameraSource.CAMERA_FACING_BACK;
+    public float fps = 15.0f;
 
    /* public  void registerWith(Registrar registrar) {
         methodChannel = new MethodChannel(registrar.messenger(), "my_camera");
@@ -241,11 +282,60 @@ public class MyCamera implements MethodChannel.MethodCallHandler, PlatformView, 
         camera.takePicture(null, null, jpegCallback);
     }
 
+    private static class MethodResultWrapper implements MethodChannel.Result {
+        private MethodChannel.Result methodResult;
+        private Handler handler;
 
+        MethodResultWrapper(MethodChannel.Result result) {
+            methodResult = result;
+            handler = new Handler(Looper.getMainLooper());
+        }
 
+        @Override
+        public void success(final Object result) {
+            handler.post(
+                    new Runnable() {
+                        @Override
+                        public void run() {
+                            methodResult.success(result);
+                        }
+                    });
+        }
+
+        @Override
+        public void error(
+                final String errorCode, final String errorMessage, final Object errorDetails) {
+            handler.post(
+                    new Runnable() {
+                        @Override
+                        public void run() {
+                            methodResult.error(errorCode, errorMessage, errorDetails);
+                        }
+                    });
+        }
+
+        @Override
+        public void notImplemented() {
+            handler.post(
+                    new Runnable() {
+                        @Override
+                        public void run() {
+                            methodResult.notImplemented();
+                        }
+                    });
+        }
+    }
+    public MyCamera(Activity activity) {
+        //   final BinaryMessenger messenger;
+        this.activity = activity;
+
+        this.delegate = new MycameraDelegate(activity);
+        CheckPermissionUtils.initPermission(this.activity);
+    }
 
     @Override
     public void onMethodCall(MethodCall methodCall, @NonNull MethodChannel.Result result) {
+        MethodChannel.Result result1 = new MethodResultWrapper(result);
         switch (methodCall.method) {
             case "waitForCamera":
                 result.success(null);
@@ -422,6 +512,8 @@ public class MyCamera implements MethodChannel.MethodCallHandler, PlatformView, 
                 result.success(param.getSupportedFlashModes());
                 break;
             }
+
+
             case "setFlashType": {
                 String flashType = "auto";
 
@@ -493,6 +585,35 @@ public class MyCamera implements MethodChannel.MethodCallHandler, PlatformView, 
 
     }
 
+    private void setup(
+            final BinaryMessenger messenger,
+
+            final Activity activity,
+            final PluginRegistry.Registrar registrar,
+            final ActivityPluginBinding activityBinding) {
+        this.activity = activity;
+        this.delegate = new MycameraDelegate(activity);
+        methodChannel = new MethodChannel(messenger, CHANNEL);
+        methodChannel.setMethodCallHandler(this);
+        if (registrar != null) {
+            // V1 embedding setup for activity listeners.
+            registrar.addActivityResultListener(delegate);
+            registrar.addRequestPermissionsResultListener(delegate);
+        } else {
+            // V2 embedding setup for activity listeners.
+            activityBinding.addActivityResultListener(delegate);
+            activityBinding.addRequestPermissionsResultListener(delegate);
+        }
+    }
+
+    private void tearDown() {
+        activityBinding.removeActivityResultListener(delegate);
+        activityBinding.removeRequestPermissionsResultListener(delegate);
+        activityBinding = null;
+        delegate = null;
+        methodChannel.setMethodCallHandler(null);
+        methodChannel = null;
+    }
 
     @Override
     public void dispose() {

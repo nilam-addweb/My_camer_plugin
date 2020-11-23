@@ -5,6 +5,8 @@ import 'dart:typed_data';
 import 'package:flutter/cupertino.dart';
 import 'package:my_camera/my_camera.dart';
 import 'package:flutter/material.dart';
+import 'new.dart';
+
 
 
 
@@ -119,8 +121,7 @@ class _MyAppState extends State<MyApp> {
           crossAxisAlignment: CrossAxisAlignment.end,
           mainAxisSize: MainAxisSize.min,
           children: [
-            FloatingActionButton(
-             // heroTag: "test1",
+            FloatingActionButton(heroTag: 1,
               child: Icon(Icons.switch_camera),
               onPressed: () async {
                 await cameraController.switchCamera();
@@ -131,15 +132,24 @@ class _MyAppState extends State<MyApp> {
             ),
             Container(height: 16.0),
             FloatingActionButton(
+                heroTag: 2,
                 child: Icon(Icons.camera_alt),
                 onPressed: () {
                   cameraController.captureImage();
                 }),
             Container(height: 16.0),
             FloatingActionButton(
+                heroTag: 3,
                 child: Icon(Icons.scanner),
                 onPressed: () {
                   _scan();
+                }),
+            Container(height: 16.0),
+            FloatingActionButton(
+                heroTag: 4,
+                child: Icon(Icons.chrome_reader_mode),
+                onPressed: () {
+_navigation();
                 }),
           ]),
 
@@ -166,6 +176,14 @@ class _MyAppState extends State<MyApp> {
         this.pictureSizes = pictureSizes;
       });
     });
+  }
+
+  void _navigation() {
+
+    Navigator.push(
+      context,
+      new MaterialPageRoute(builder: (context) => new Home()),
+    );
   }
 
 }

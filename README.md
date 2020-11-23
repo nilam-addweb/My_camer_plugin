@@ -1,15 +1,109 @@
 # my_camera
 
-A new Flutter plugin.
+my_camera makes it super easy to add camera to your Flutter app
 
-## Getting Started
+##Features 
+# Capture image
+# Save image in gallery
+#two types  of camera 
+#   front 
+#   Back
+#flash light
+#QR Code Scanner
+#OCR
+#Custome Design of camera
 
-This project is a starting point for a Flutter
-[plug-in package](https://flutter.dev/developing-packages/),
-a specialized package that includes platform-specific implementation code for
-Android and/or iOS.
+##Usage
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+First, add My_camera as a dependency in your pubspec.yaml file.
+
+#And  add some pemission in manifest file :-
+
+#<uses-permission android:name="android.permission.FLASHLIGHT" />
+#<uses-permission android:name="android.permission.WAKE_LOCK" />
+#<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+#<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+#<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+# <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+#<uses-permission android:name="android.permission.RECORD_AUDIO" />
+#<uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+#<uses-permission android:name="android.permission.INTERNET" />
+#<uses-permission android:name="android.permission.CAMERA" />
+#<uses-feature android:name="android.hardware.camera" />
+#<uses-feature android:name="android.hardware.camera.front" />
+#<uses-permission android:name="android.permission.VIBRATE"/>
+#<uses-feature android:name="android.hardware.microphone" />
+
+#And use this Method in your code
+
+#Add camera
+#import 'package:my_camera/my_camera.dart';
+
+  _onCameraCreated(MyCameraController controller) {
+    this.cameraController = controller;
+    this.cameraController.getPictureSizes().then((pictureSizes) {
+      setState(() {
+        this.pictureSizes = pictureSizes;
+      });
+    });
+  }
+
+#Add flash light
+IconButton(
+  icon: Icon(Icons.flash_off_outlined,color: Colors.black,),
+     onPressed: () {
+  cameraController.setFlashType(FlashType.off);
+  },
+  ),
+ IconButton(
+   icon: Icon(Icons.flash_on,color: Colors.black,),
+ 
+  onPressed: () {
+  cameraController.setFlashType(FlashType.torch);
+  },   ),
+
+#Add Scanner
+
+  Future _scan() asyncoutputController {
+  String barcode =await cameraController.scan();
+    if (barcode == null) {
+      print('nothing return.');
+    } else {
+      this.outputController.text = barcode;
+      print(barcode);
+    }
+  }
+#Add OCR
+
+int _cameraOcr = MyCamera.CAMERA_BACK;
+  bool _autoFocusOcr = true;
+  bool _torchOcr = false;
+  bool _multipleOcr = true;
+  bool _waitTapOcr = true;
+  bool _showTextOcr = true;
+  Call _previewOcr;
+  List<OcrText> _textsOcr = [];
+
+ Future<Null> _read() async {
+    List<OcrText> texts = [];
+    try {
+      texts = await MyCameraPlugin.read(
+        flash: _torchOcr,
+        autoFocus: _autoFocusOcr,
+        multiple: _multipleOcr,
+        waitTap: _waitTapOcr,
+        showText: _showTextOcr,
+        preview: _previewOcr,
+        camera: _cameraOcr,
+        fps: 2.0,
+      );
+    } on Exception {
+      texts.add(OcrText(''));
+    }
+    if (!mounted) return;
+    setState(() => _textsOcr = texts);
+
+  }
+
+
 
