@@ -69,10 +69,13 @@ import 'package:my_camera/my_camera.dart';
 # Add flash light
 
 IconButton(
+
   icon: Icon(Icons.flash_off_outlined,color: Colors.black,),
-     onPressed: () {
+  
+   onPressed: () {
      
   cameraController.setFlashType(FlashType.off);
+  
   },
   
   ),
