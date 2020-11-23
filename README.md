@@ -2,18 +2,18 @@
 
 my_camera makes it super easy to add camera to your Flutter app
 
-##Features 
-# Capture image
-# Save image in gallery
-#two types  of camera 
-#   front 
-#   Back
-#flash light
-#QR Code Scanner
-#OCR
-#Custome Design of camera
+#Features 
+Capture image
+Save image in gallery
+two types  of camera 
+   front 
+   Back
+flash light
+QR Code Scanner
+OCR
+Custome Design of camera
 
-##Usage
+#Usage
 
 First, add My_camera as a dependency in your pubspec.yaml file.
 
