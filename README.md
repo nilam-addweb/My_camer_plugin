@@ -2,22 +2,30 @@
 
 my_camera makes it super easy to add camera to your Flutter app
 
-#Features 
+# Features 
 Capture image
+
 Save image in gallery
+
 two types  of camera 
+
    front 
+   
    Back
+   
 flash light
+
 QR Code Scanner
+
 OCR
+
 Custome Design of camera
 
-#Usage
+# Usage
 
 First, add My_camera as a dependency in your pubspec.yaml file.
 
-#And  add some pemission in manifest file :-
+# And  add some pemission in manifest file :-
 
 #<uses-permission android:name="android.permission.FLASHLIGHT" />
 #<uses-permission android:name="android.permission.WAKE_LOCK" />
@@ -34,10 +42,12 @@ First, add My_camera as a dependency in your pubspec.yaml file.
 #<uses-permission android:name="android.permission.VIBRATE"/>
 #<uses-feature android:name="android.hardware.microphone" />
 
-#And use this Method in your code
+# And use this Method in your code
 
-#Add camera
-#import 'package:my_camera/my_camera.dart';
+# Add camera
+
+
+import 'package:my_camera/my_camera.dart';
 
   _onCameraCreated(MyCameraController controller) {
     this.cameraController = controller;
