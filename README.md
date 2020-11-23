@@ -93,12 +93,18 @@ IconButton(
 # Add Scanner
 
   Future _scan() asyncoutputController {
+  
   String barcode =await cameraController.scan();
-    if (barcode == null) {
-      print('nothing return.');
-    } else {
-      this.outputController.text = barcode;
-      print(barcode);
+  
+  if (barcode == null) {
+  
+   print('nothing return.');
+   
+   } else {
+    
+   this.outputController.text = barcode;
+   
+   print(barcode);
     }
   }
 # Add OCR
