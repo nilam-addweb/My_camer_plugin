@@ -3,12 +3,9 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/cupertino.dart';
-import 'package:my_camera/my_camera.dart';
+import 'package:my_cameranew/my_cameraplugin.dart';
 import 'package:flutter/material.dart';
 import 'new.dart';
-
-
-
 
 void main() {
   String id = DateTime.now().toIso8601String();
@@ -124,7 +121,7 @@ class _MyAppState extends State<MyApp> {
             FloatingActionButton(heroTag: 1,
               child: Icon(Icons.switch_camera),
               onPressed: () async {
-                await cameraController.switchCamera();
+                await cameraController.getFlashType();
                 List<FlashType> types = await cameraController.getFlashType();
 
 

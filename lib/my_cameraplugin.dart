@@ -4,9 +4,8 @@ library my_camera;
 import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
-
-import 'package:my_camera/my_camera_plugin.dart';
-import 'package:my_camera/lifecycle_handler.dart';
+import 'my_camera_plugin.dart';
+import 'lifecycle_handler.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';

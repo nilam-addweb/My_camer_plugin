@@ -3,7 +3,6 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
-  my_camera
 )
 
 set(PLUGIN_BUNDLED_LIBRARIES)
