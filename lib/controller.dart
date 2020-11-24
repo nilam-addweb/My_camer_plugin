@@ -3,16 +3,16 @@ part of my_camera;
 /// Controller for a single GoogleMap instance running on the host platform.
 class MyCameraController {
   MyCameraController._(
-    this.channel,
-    this._myCameraState,
-  ) : assert(channel != null) {
+      this.channel,
+      this._myCameraState,
+      ) : assert(channel != null) {
     channel.setMethodCallHandler(_handleMethodCall);
   }
 
   static Future<MyCameraController> init(
-    int id,
-    _MyCameraState myCameraState,
-  ) async {
+      int id,
+      _MyCameraState myCameraState,
+      ) async {
     assert(id != null);
     final MethodChannel channel = MethodChannel('plugins.flutter.io/my_camera/$id');
     // TODO(amirh): remove this on when the invokeMethod update makes it to stable Flutter.
@@ -22,8 +22,6 @@ class MyCameraController {
       myCameraState,
     );
   }
-
-  @visibleForTesting
   final MethodChannel channel;
   final CameraAccessDenied = 'PERMISSION_NOT_GRANTED';
   final _MyCameraState _myCameraState;
@@ -137,7 +135,7 @@ class MyCameraController {
 
   Future<void> setFlashType(FlashType flashType) async {
     // TODO(amirh): remove this on when the invokeMethod update makes it to stable Flutter.
-   String flashTypeString;
+    String flashTypeString;
 
     switch (flashType) {
       case FlashType.auto:
@@ -160,7 +158,7 @@ class MyCameraController {
 
   Future<List<FlashType>> getFlashType() async {
     final types = await channel.invokeMethod('getFlashType');
-print("getFlashType => $types");
+    print("getFlashType => $types");
     List<FlashType> finalTypes = [];
 
     if (types == null) return finalTypes;

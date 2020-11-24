@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:my_cameranew/my_cameraplugin.dart';
-import 'package:my_cameranew/my_camera_plugin.dart';
+import 'package:my_camera_pluggin/my_cameranew.dart';
+import 'package:my_camera_pluggin/my_camera_plugin.dart';
 import 'package:my_camera_example/ocr_text_detail.dart';
 
 

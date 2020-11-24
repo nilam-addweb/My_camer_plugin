@@ -3,7 +3,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/cupertino.dart';
-import 'package:my_cameranew/my_cameraplugin.dart';
+import 'package:my_camera_pluggin/my_cameranew.dart';
 import 'package:flutter/material.dart';
 import 'new.dart';
 
